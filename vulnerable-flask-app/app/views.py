@@ -51,7 +51,10 @@ def show_file():
     filename = request.args.get('file', '')
     path = os.path.join('files', filename)
     
-    if not os.path.exists(path):
-        abort(404)
-        
-    return "<pre>" + open(path, 'r').read() + "</pre>"
+    try:
+        if not os.path.exists(path):
+            return f"File not found: {path}", 404
+            
+        return "<pre>" + open(path, 'r', errors='ignore').read() + "</pre>"
+    except Exception as e:
+        return f"Error: {str(e)}", 500
